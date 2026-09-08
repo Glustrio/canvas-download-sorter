@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas Download Sorter</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Canvas Download Sorter</h1>
+      <p>
+        Files downloaded from Canvas are saved into a folder named after their course, inside
+        Chrome's download location (Chrome menu › Settings › Downloads).
+      </p>
+
+      <h2>Courses</h2>
+      <p id="empty">No courses yet. Open a course on Canvas and it will show up here.</p>
+      <table id="courses" hidden>
+        <thead>
+          <tr>
+            <th>Canvas course</th>
+            <th>Folder name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <h2>Options</h2>
+      <label>
+        <input type="checkbox" id="auto-naming" />
+        Use the Canvas course name as the folder name for courses I haven't named
+      </label>
+
+      <p id="status" role="status"></p>
+    </main>
+
+    <template id="course-row">
+      <tr>
+        <td class="course-name"></td>
+        <td><input type="text" class="folder" placeholder="e.g. EC1011a" autocomplete="off" /></td>
+        <td><button type="button" class="remove">Remove</button></td>
+      </tr>
+    </template>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
