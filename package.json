@@ -1,6 +1,6 @@
 {
   "name": "canvas-download-sorter",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Chrome extension that files Canvas downloads into a folder per course",
   "private": true,
   "type": "module",
@@ -8,6 +8,7 @@
     "test": "node --test test/*.test.js",
     "test:e2e": "node test/e2e/run.js",
     "package": "node scripts/package.js",
+    "screenshot": "node scripts/screenshot.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
