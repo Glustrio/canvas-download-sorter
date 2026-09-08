@@ -195,7 +195,7 @@ try {
 
   await tab.send('Page.navigate', { url: `chrome-extension://${extensionId}/options.html` });
   const title = await waitFor('the options page', pageTitle).catch(() => '');
-  check('options page loads', title === 'Canvas Download Sorter', JSON.stringify(title));
+  check('options page loads', title === 'Download Sorter for Canvas', JSON.stringify(title));
   check(
     'options page shows the empty state when nothing is stored',
     await tab.evaluate(

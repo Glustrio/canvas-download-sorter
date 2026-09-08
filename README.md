@@ -1,4 +1,4 @@
-# Canvas Download Sorter
+# Download Sorter for Canvas
 
 [![CI](https://github.com/Glustrio/canvas-download-sorter/actions/workflows/ci.yml/badge.svg)](https://github.com/Glustrio/canvas-download-sorter/actions/workflows/ci.yml)
 
@@ -123,4 +123,6 @@ publishes it on the Releases page. Steps for the Chrome Web Store are in
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Canvas is a trademark of Instructure, Inc. This is an
+independent project, not affiliated with or endorsed by Instructure or Harvard
+University.

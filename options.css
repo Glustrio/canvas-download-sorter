@@ -11,6 +11,12 @@ body {
 
 main {
   max-width: 40rem;
+  margin: 0 auto;
+}
+
+.fine-print {
+  font-size: 0.9em;
+  opacity: 0.75;
 }
 
 h1 {

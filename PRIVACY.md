@@ -1,6 +1,6 @@
 # Privacy policy
 
-Canvas Download Sorter runs entirely inside your browser.
+Download Sorter for Canvas runs entirely inside your browser.
 
 - It reads the course name from Canvas course pages you open, and the URL of
   downloads that start from Canvas, in order to pick a folder name.
