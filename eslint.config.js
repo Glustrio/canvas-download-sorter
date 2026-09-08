@@ -12,7 +12,7 @@ export default [
     },
   },
   {
-    files: ['test/**/*.js', 'eslint.config.js'],
+    files: ['test/**/*.js', 'scripts/**/*.js', 'eslint.config.js'],
     languageOptions: {
       globals: { ...globals.node, WebSocket: 'readonly' },
     },

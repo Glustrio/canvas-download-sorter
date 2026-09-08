@@ -15,17 +15,23 @@ It is set up for Harvard's Canvas (`canvas.harvard.edu`). See
 
 ## Install
 
-The extension is not on the Chrome Web Store, so it is loaded from a folder:
+The extension is not on the Chrome Web Store yet, so it is loaded from a folder:
 
-1. Clone or download this repository.
+1. Download the latest `canvas-download-sorter-<version>.zip` from the
+   [Releases page](https://github.com/Glustrio/canvas-download-sorter/releases)
+   and unzip it somewhere you'll keep it (Chrome loads the extension from that
+   folder every time it starts). Developers can clone the repository instead.
 2. Open `chrome://extensions` and turn on **Developer mode** (top right).
-3. Click **Load unpacked** and choose the repository folder.
+3. Click **Load unpacked** and choose the unzipped folder.
+
+Chrome may remind you at startup that you have extensions in developer mode.
+That is expected for anything installed outside the Web Store.
 
 ## Set up
 
 **Name your courses.** Open any course on Canvas, then click the extension's
-toolbar icon. Every course you have opened is listed with a box for its folder
-name. Type a short name such as `EC1011a` and press Enter. The badge on the
+toolbar icon. Every course you have opened — including tabs that were already
+open when you installed — is listed with a box for its folder name. Type a short name such as `EC1011a` and press Enter. The badge on the
 icon counts courses that still need a name; a download from an unnamed course
 is saved where it would have gone anyway.
 
@@ -64,6 +70,7 @@ The reasoning behind these choices is in [docs/design.md](docs/design.md).
 | ------------------------------ | -------------------------------------------------------------------------- |
 | `downloads`                    | To be asked for a filename when a download starts.                         |
 | `storage`                      | To remember course names, folder names and the automatic-naming setting.   |
+| `scripting`                    | To read course names from Canvas tabs that were already open at install.   |
 | `https://canvas.harvard.edu/*` | To read course names on Canvas pages and the URL of the active Canvas tab. |
 
 Nothing leaves your browser. The extension makes no network requests of its
@@ -98,6 +105,21 @@ involved.
 
 After changing the code, click the reload icon on the extension's card in
 `chrome://extensions`.
+
+## Releasing
+
+Bump the version in `manifest.json` and `package.json`
+(`npm version 1.2.0 --no-git-tag-version` updates the latter), commit, then tag
+and push:
+
+```
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+The Release workflow runs the tests, builds the zip with `npm run package` and
+publishes it on the Releases page. Steps for the Chrome Web Store are in
+[docs/chrome-web-store.md](docs/chrome-web-store.md).
 
 ## License
 
