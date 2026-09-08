@@ -79,13 +79,22 @@ Replace `canvas.harvard.edu` in two files: the `host_permissions` and
 
 ```
 npm install
-npm test
+npm test          # unit tests
 npm run lint
+npm run test:e2e  # real-browser test, see below
 ```
 
 The decision logic lives in `sorter.js` and has no Chrome dependencies. The
 service worker, content script and options page are tested against a small
 in-memory fake of the `chrome` API (`test/helpers/fake-chrome.js`) and jsdom.
+
+`npm run test:e2e` loads the extension into Chrome for Testing, serves a fake
+Canvas over HTTPS from the test process, and checks where downloaded files
+actually land — including a download that redirects to a CDN host, as real
+Canvas file links do. It downloads Chrome for Testing (about 150 MB) into
+`~/.cache/puppeteer` the first time, or uses the binary named by `CHROME_PATH`.
+It needs Node 22 or newer and `openssl` on the path. No Canvas login is
+involved.
 
 After changing the code, click the reload icon on the extension's card in
 `chrome://extensions`.

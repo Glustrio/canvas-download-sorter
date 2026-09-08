@@ -14,7 +14,7 @@ export default [
   {
     files: ['test/**/*.js', 'eslint.config.js'],
     languageOptions: {
-      globals: { ...globals.node },
+      globals: { ...globals.node, WebSocket: 'readonly' },
     },
   },
 ];

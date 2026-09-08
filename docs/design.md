@@ -78,5 +78,13 @@ download folder as it would without the extension.
 
 The decision logic (`sorter.js`) has no Chrome dependencies and is covered by
 `node --test`. The service worker, content script and options page are thin
-wrappers around it and are checked by loading the extension and downloading a
-file.
+wrappers around it, tested against an in-memory fake of the `chrome` API and
+jsdom.
+
+An end-to-end test (`npm run test:e2e`) loads the extension into Chrome for
+Testing and drives it over the DevTools protocol against a fake Canvas served
+from the test process, with `--host-resolver-rules` pointing
+`canvas.harvard.edu` at it. It covers what the unit tests cannot: that Chrome
+accepts the manifest, that a suggested `folder/name.pdf` really creates the
+folder, that the extension sees the pre-redirect URL, and that the content
+script's match pattern fires on course pages.
