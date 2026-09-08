@@ -1,6 +1,8 @@
 // Just enough of the Chrome DevTools Protocol for the end-to-end test.
 // Needs Node 22+ for the built-in WebSocket.
 
+const COMMAND_TIMEOUT_MS = 15000;
+
 export class Cdp {
   constructor(url) {
     this.ws = new WebSocket(url);
@@ -27,7 +29,20 @@ export class Cdp {
     await this.ready;
     const id = this.nextId++;
     return new Promise((resolve, reject) => {
-      this.pending.set(id, { resolve, reject });
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        reject(new Error(`${method} got no response within ${COMMAND_TIMEOUT_MS}ms`));
+      }, COMMAND_TIMEOUT_MS);
+      this.pending.set(id, {
+        resolve: (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        reject: (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      });
       this.ws.send(JSON.stringify({ id, method, params }));
     });
   }

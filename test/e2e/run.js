@@ -108,6 +108,12 @@ function launchChrome(binary) {
       '--disable-gpu',
       '--no-first-run',
       '--no-default-browser-check',
+      // Without these Chrome can block on the OS keyring or on a small /dev/shm in CI.
+      '--password-store=basic',
+      '--use-mock-keychain',
+      '--disable-dev-shm-usage',
+      // GitHub's Ubuntu runners restrict the user namespaces Chrome's sandbox needs.
+      ...(process.env.CI ? ['--no-sandbox'] : []),
       `--user-data-dir=${profileDir}`,
       `--load-extension=${extensionDir}`,
       '--remote-debugging-port=0',
@@ -118,8 +124,8 @@ function launchChrome(binary) {
     { stdio: ['ignore', 'ignore', 'pipe'] },
   );
 
+  let stderr = '';
   const devtoolsPort = new Promise((resolve, reject) => {
-    let stderr = '';
     chrome.stderr.on('data', (chunk) => {
       stderr += chunk;
       const match = /DevTools listening on ws:\/\/127\.0\.0\.1:(\d+)\//.exec(stderr);
@@ -128,21 +134,35 @@ function launchChrome(binary) {
     chrome.on('exit', (code) => reject(new Error(`Chrome exited with code ${code}\n${stderr}`)));
   });
 
-  return { chrome, devtoolsPort };
+  return { chrome, devtoolsPort, stderr: () => stderr };
 }
 
 function stop(child) {
-  if (child.exitCode !== null) return Promise.resolve();
+  // A process killed by a signal has exitCode null and signalCode set.
+  if (child.exitCode !== null || child.signalCode !== null) return Promise.resolve();
   return new Promise((resolve) => {
     child.once('exit', resolve);
     child.kill('SIGTERM');
   });
 }
 
+// A browser that never comes up must fail the run, not stall it.
+const DEADLINE_MS = 5 * 60 * 1000;
+let launched;
+const deadline = setTimeout(() => {
+  console.error(`\ngave up after ${DEADLINE_MS / 1000}s`);
+  if (launched) {
+    console.error(`Chrome's output so far:\n${launched.stderr()}`);
+    launched.chrome.kill('SIGKILL');
+  }
+  process.exit(1);
+}, DEADLINE_MS);
+
 const server = await startFakeCanvas(selfSignedCertificate());
 const canvas = `https://canvas.harvard.edu:${server.address().port}`;
 const other = `https://localhost:${server.address().port}`;
-const { chrome, devtoolsPort } = launchChrome(await chromeBinary());
+launched = launchChrome(await chromeBinary());
+const { chrome, devtoolsPort } = launched;
 
 try {
   const port = await devtoolsPort;
@@ -264,10 +284,12 @@ try {
   server.closeAllConnections();
   server.close();
   rmSync(workDir, { recursive: true, force: true, maxRetries: 5 });
+  clearTimeout(deadline);
 }
 
 if (failures) {
-  console.error(`\n${failures} check(s) failed`);
+  const chromeOutput = launched.stderr().split('\n').slice(-20).join('\n');
+  console.error(`\n${failures} check(s) failed. Chrome's last output:\n${chromeOutput}`);
   process.exit(1);
 }
 console.log('\nall end-to-end checks passed');
