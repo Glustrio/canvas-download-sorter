@@ -10,7 +10,7 @@ Downloads from anywhere else are left alone.
 
 Chrome extensions cannot write to arbitrary locations on disk. The only hook
 is `chrome.downloads.onDeterminingFilename`, which lets an extension suggest a
-filename *relative to Chrome's download directory*, optionally with
+filename _relative to Chrome's download directory_, optionally with
 subdirectories. So the extension can produce `EC1011a/lecture4.pdf`, but never
 `~/Documents/EC1011a/lecture4.pdf`.
 
