@@ -69,4 +69,18 @@ autoNaming.addEventListener('change', async () => {
   flash('Saved');
 });
 
+// Courses can appear while this page is open (the content script records them).
+// Re-render only when the set of courses changes, so typing isn't interrupted.
+chrome.storage.onChanged.addListener((changes) => {
+  if (!changes.courses) return;
+  const shown = [...tbody.children]
+    .map((row) => row.dataset.courseId)
+    .sort()
+    .join();
+  const stored = Object.keys(changes.courses.newValue ?? {})
+    .sort()
+    .join();
+  if (shown !== stored) chrome.storage.sync.get(DEFAULTS).then(render);
+});
+
 chrome.storage.sync.get(DEFAULTS).then(render);

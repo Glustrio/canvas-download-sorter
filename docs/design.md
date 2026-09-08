@@ -42,6 +42,13 @@ Course names come from a content script that runs on course pages and reads
 the course link in the breadcrumb. This means a course appears on the options
 page as soon as the user opens it in Canvas, before any download.
 
+Chrome only runs content scripts in pages loaded after the extension was
+installed, so on install the service worker also injects the script into any
+Canvas course tabs that are already open (this is what the `scripting`
+permission is for). The options page listens for storage changes and re-renders
+when the set of courses changes — but not when only a folder name changes, so
+typing in one box isn't interrupted by a save in another.
+
 Folder names are sanitized for characters that are invalid on macOS, Windows,
 or Linux, since the same iCloud folder may be opened on all of them.
 

@@ -151,6 +151,17 @@ test('shows the number of unnamed courses on the badge after install', async () 
   assert.equal(fake.state.badgeColor, '#d93025');
 });
 
+test('runs the content script in course tabs that are already open at install', async () => {
+  const fake = await loadBackground({
+    tabs: [{ id: 7, url: 'https://canvas.harvard.edu/courses/171357/modules' }],
+  });
+
+  fake.emit('runtime.onInstalled');
+  await flush();
+
+  assert.deepEqual(fake.state.injections, [{ target: { tabId: 7 }, files: ['content.js'] }]);
+});
+
 test('does not count courses that automatic naming can handle', async () => {
   const fake = await loadBackground({
     storage: {

@@ -34,6 +34,31 @@ async function openOptionsPage(storage) {
   };
 }
 
+test('adds a row when a course is recorded while the page is open', async () => {
+  const { fake, rows } = await openOptionsPage(threeCourses);
+
+  await fake.chrome.storage.sync.set({
+    courses: { ...threeCourses.courses, 400: { name: 'GOV 20', folder: '' } },
+  });
+  await flush();
+
+  assert.deepEqual(
+    rows().map((row) => row.querySelector('.course-name').textContent),
+    ['Course 300', 'ECON 1011A', 'GOV 20', 'MATH 21A'],
+  );
+});
+
+test('does not rebuild the list when only a folder name changes', async () => {
+  const { rows, fire } = await openOptionsPage(threeCourses);
+  const input = rows()[2].querySelector('.folder');
+
+  input.value = 'Math';
+  fire(input, 'change');
+  await flush();
+
+  assert.equal(rows()[2].querySelector('.folder'), input);
+});
+
 test('lists courses sorted by name, with a placeholder for courses without one', async () => {
   const { document, rows } = await openOptionsPage(threeCourses);
 

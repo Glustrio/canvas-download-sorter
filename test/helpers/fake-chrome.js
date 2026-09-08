@@ -8,6 +8,7 @@ export function createFakeChrome({ storage = {}, tabs = [] } = {}) {
     badgeText: null,
     badgeColor: null,
     optionsPageOpens: 0,
+    injections: [],
   };
 
   const event = (name) => ({
@@ -62,6 +63,11 @@ export function createFakeChrome({ storage = {}, tabs = [] } = {}) {
           state.writes += 1;
           emit('storage.onChanged', changes, 'sync');
         },
+      },
+    },
+    scripting: {
+      async executeScript(injection) {
+        state.injections.push(injection);
       },
     },
     tabs: {
