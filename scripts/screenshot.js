@@ -102,6 +102,11 @@ try {
     deviceScaleFactor: 1,
     mobile: false,
   });
+  // Store listings sit on a white page, so capture the light theme regardless of
+  // what the machine running this prefers.
+  await tab.send('Emulation.setEmulatedMedia', {
+    features: [{ name: 'prefers-color-scheme', value: 'light' }],
+  });
   await tab.send('Page.navigate', { url: `chrome-extension://${extensionId}/options.html` });
   await waitFor('the options page to render', () =>
     tab.evaluate(`document.querySelectorAll('#courses tbody tr').length === 4`).catch(() => false),
